@@ -28,17 +28,32 @@ namespace csv
         template <class T>
         T GetValue(const std::string & Key)
         {
-            const std::string & s = Values.at(Key);            
-            std::stringstream   ss(s);
-            T                   t;
-            ss >> t;
-            return t;
+            try
+            {
+                const std::string & s = Values.at(Key);            
+                std::stringstream   ss(s);
+                T                   t;
+                ss >> t;
+                return t;
+            }
+            catch (const std::out_of_range& oor)
+            {
+                std::cerr << "Error returned: " << oor.what() << std::endl;
+                std::string message("unable to get value at key "  + Key);
+                throw message;
+            }
+            catch(...)
+            {
+                std::string message("no idea what went wrong");
+                throw message;
+            }
         };
         bool ReadLine();
         inline std::vector<std::string> GetHeaderNames();
         inline std::string GetLine();
         inline std::string GetFileName();
         bool IsFileOpen();
+
 
     private:
         char delim;
@@ -83,10 +98,20 @@ namespace csv
         }
         std::stringstream lineStream(line);
         std::string     cell;
-        while(std::getline(lineStream,cell, delim))
+        try
         {
-            HeaderNames.push_back(cell);
+            while(std::getline(lineStream,cell, delim))
+            {
+                HeaderNames.push_back(cell);
+            }
         }
+        catch (...)
+        {
+            std::cerr << "Unkown error occured when attempting to read the header line" << std::endl;
+            std::string message ("Could Not Read Headers");
+            throw message;
+        }
+        
     }
 
     ReadCSV::ReadCSV(   const std::string & _fileName 
