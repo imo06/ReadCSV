@@ -12,7 +12,7 @@ The raw string of the line can be obtained using `GetLine()`. Use this if you wi
 
 The template function `GetValue<T>(headerName)` can be used to get the current line's value for Header Name `headerName` as a `T` value.
 
-#Example of Use
+# Example of Use
 Below is an example
 ```
 char removeChars[] = "()-\" ";
@@ -23,7 +23,7 @@ while(csv.ReadLine()){
 }
 ```
 
-#Error Handling
+# Error Handling
 If the file cannot be open, an `std::string` message is thrown.
 
 
