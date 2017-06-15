@@ -37,6 +37,8 @@ namespace csv
         bool ReadLine();
         inline std::vector<std::string> GetHeaderNames();
         inline std::string GetLine();
+        inline std::string GetFileName();
+        bool IsFileOpen();
 
     private:
         char delim;
@@ -56,6 +58,14 @@ namespace csv
 
     inline std::string ReadCSV::GetLine(){
         return currentLine;
+    }
+    
+    inline std::string ReadCSV::GetFileName(){
+        return fileName;
+    }
+
+    bool ReadCSV::IsFileOpen(){
+        return data.is_open();
     }
 
     inline void ReadCSV::Initialize(){
