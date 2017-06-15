@@ -95,6 +95,7 @@ namespace csv
             return true;
         }
         else{
+            data.close();
             return false;
         }
         
