@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <cstring>
 
-namespace read
+namespace csv
 {
     
 
