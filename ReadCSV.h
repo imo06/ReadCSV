@@ -16,7 +16,12 @@ namespace csv
     class ReadCSV
     {
     public:
-        ReadCSV(const std::string & , const char , char *r=(char*)0);
+        ReadCSV(const std::string & , 
+                const char , 
+                char *r=(char*)0,
+                int igLines=0);
+        ReadCSV(const std::string &, const char,char *r);
+        ReadCSV(const std::string &, const char, int);
         // filename, deliminaator, ignore/remove character
         ~ReadCSV(){};
         
@@ -40,6 +45,9 @@ namespace csv
         std::vector<std::string> HeaderNames;
         std::fstream data;
         std::string currentLine;
+        int ignoreLines;
+        std::string fileName;
+        inline void Initialize();
     };
 
     inline std::vector<std::string> ReadCSV::GetHeaderNames(){
@@ -50,27 +58,54 @@ namespace csv
         return currentLine;
     }
 
-    ReadCSV::ReadCSV( const std::string & fileName 
-        ,const char _delim, char *_r)
-    {
-        /* Constructor for ReadCSV automatically reads in */
-        delim   =       _delim;
-        removeChar =    _r;
-        data.open(fileName);
-        std::string     line;
+    inline void ReadCSV::Initialize(){
+        data.open(fileName);        
         if(!data.is_open()){
             std::string message ("Could Not Open File");
             throw message;
         }
 
+        std::string     line;
         // Create Header Names from the first line
-        std::getline(data,line);
+        for (size_t i = 0; i < ignoreLines+1; i++)
+        {
+            std::getline(data,line);
+        }
         std::stringstream lineStream(line);
         std::string     cell;
         while(std::getline(lineStream,cell, delim))
         {
             HeaderNames.push_back(cell);
         }
+    }
+
+    ReadCSV::ReadCSV(   const std::string & _fileName 
+                        ,const char _delim
+                        ,char *_r
+                        ,int _ignoreLines)
+    {
+        /* Constructor for ReadCSV automatically reads in */
+        delim   =       _delim;
+        removeChar =    _r;
+        ignoreLines =   _ignoreLines;
+        fileName =      _fileName;
+        Initialize();
+    }
+
+    ReadCSV::ReadCSV(const std::string & _fileName,const char _delim,char *_r){
+        delim   =       _delim;
+        removeChar =    _r;
+        ignoreLines =   1;
+        fileName =      _fileName;
+        Initialize();
+    }
+
+    ReadCSV::ReadCSV(const std::string & _fileName,const char _delim,int _ignoreLines){
+        delim   =       _delim;
+        removeChar =    (char*)0;
+        ignoreLines =   _ignoreLines;
+        fileName =      _fileName;
+        Initialize();
     }
 
     bool ReadCSV::ReadLine()
