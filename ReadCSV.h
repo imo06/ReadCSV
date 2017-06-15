@@ -16,7 +16,7 @@ namespace read
     class ReadCSV
     {
     public:
-        ReadCSV(const std::string & , const char , char *r);
+        ReadCSV(const std::string & , const char , char *r=(char*)0);
         // filename, deliminaator, ignore/remove character
         ~ReadCSV(){};
         
@@ -75,6 +75,7 @@ namespace read
 
     bool ReadCSV::ReadLine()
     {
+
         /* Read in a single line */
         std::string line;
         if(std::getline(data,line)){
@@ -83,8 +84,10 @@ namespace read
             for (int i = 0; i < HeaderNames.size(); i++)
             {
                 std::getline(lineStream,cell,delim);
-                for(size_t i = 0; i < strlen(removeChar); i++){
-                    cell.erase(std::remove(cell.begin(),cell.end(),removeChar[i]),cell.end());
+                if (removeChar != (char*)0){
+                    for(size_t i = 0; i < strlen(removeChar); i++){
+                        cell.erase(std::remove(cell.begin(),cell.end(),removeChar[i]),cell.end());
+                    }
                 }
                 Values[HeaderNames.at(i)]=cell;
             }
@@ -94,6 +97,7 @@ namespace read
         else{
             return false;
         }
+        
     }
 }
 #endif
